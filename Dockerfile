@@ -27,3 +27,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -i -e 's/\/var\/www\/html/\/var\/www\/html\/public/g' /etc/apache2/sites-available/000-default.conf
+
+USER 1000:www-data
