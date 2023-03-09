@@ -18,5 +18,6 @@ RUN a2enmod rewrite
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -i -e 's/\/var\/www\/html/\/var\/www\/html\/public/g' /etc/apache2/sites-available/000-default.conf
 
-ARG user_id=1000
-RUN usermod -u $user_id www-data
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
+USER www-data
