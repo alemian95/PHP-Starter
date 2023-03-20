@@ -5,12 +5,14 @@ services:
     build: .
     ports:
       - 80:80
+      - 443:443
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
     restart: unless-stopped
     env_file:
         - .env
+    user: 1000:www-data
   db:
     image: mysql:8.0
     ports:
