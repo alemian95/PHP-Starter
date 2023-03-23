@@ -7,6 +7,8 @@ RUN apt-get install -y \
     libzip-dev \
     libicu-dev \
     libpng-dev \
+    zip \
+    unzip \
     openssl
 
 # Installing php extensions
