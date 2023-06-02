@@ -11,6 +11,9 @@ RUN apt-get install -y \
     unzip \
     openssl
 
+# Installing supervisor
+RUN apt-get update && apt-get install -y supervisor
+
 # Installing php extensions
 RUN docker-php-ext-install gd zip intl bcmath
 RUN docker-php-ext-install pdo pdo_mysql
@@ -36,9 +39,9 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Changing files ownership and current user
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
+# RUN usermod -u 1000 www-data
+# RUN groupmod -g 1000 www-data
 
 # Set permissions for SSL files
-RUN chown -R www-data:www-data /etc/ssl/private
-RUN chmod -R 700 /etc/ssl/private
+# RUN chown -R www-data:www-data /etc/ssl/private
+# RUN chmod -R 700 /etc/ssl/private
