@@ -2,32 +2,33 @@ version: '3'
 
 services:
   web:
-    build: .
+    build: ./docker
     ports:
-      - 80:80
-      - 443:443
+      - 8080:80
+    #  - 443:443
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
     restart: unless-stopped
     env_file:
         - .env
-    # user: 1000:www-data
+    user: 1000:www-data
   db:
-    image: mysql:8.0
+    image: mariadb:10.6-focal
     ports:
-      - 3306:3306
+      - ${MARIADB_PORT}:${MARIADB_PORT}
     env_file:
       - .env
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: ${MYSQL_HOST}
-      PMA_PORT: ${MYSQL_PORT}
+      PMA_HOST: ${MARIADB_HOST}
+      PMA_PORT: ${MARIADB_PORT}
     ports:
       - "5001:80"
-  mailhog:
-    image: mailhog/mailhog
+  mailpit:
+    image: axllent/mailpit
     ports:
-      - "1025:8025"
+      - "8025:8025"
+      - "1025:1025"
