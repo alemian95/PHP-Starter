@@ -1,7 +1,8 @@
 <?php
 
-namespace Core\Lib;
+namespace Core\Lib\Route;
 
+use Core\Lib\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,8 +20,12 @@ class Route
     
 
     private Controller $controller;
+    private array $middlewares;
     private string $callback;
 
+    /**
+     * 
+     */
     public function __construct($uri, $callback)
     {
         $this->uri = $uri;
@@ -37,6 +42,8 @@ class Route
         $class = "App\\Controllers\\" . $callback[0];
         $this->controller = new $class();
         $this->callback = $callback[1];
+
+        $this->middlewares = [];
     }
 
     /**
@@ -53,16 +60,47 @@ class Route
         return $this;
     }
 
+    /**
+     * 
+     */
+    public function middlewares(array $middlewares)
+    {
+        foreach ($middlewares as $m)
+        {
+
+            $middleware = explode(":", $m);
+            $params = explode(",", $middleware[1] ?? "");
+
+            $class = "Core\\Lib\\Middleware\\" . $middleware[0];
+            if (! class_exists($class))
+            {
+                $class = "App\\Middlewares\\" . $middleware[0];
+            }
+            $this->middlewares[] = new $class($params);
+            
+        }
+        return $this;
+    }
+
+    /**
+     * 
+     */
     public function uri() : string
     {
         return $this->uri;
     }
 
+    /**
+     * 
+     */
     public function regex() : string
     {
         return $this->regex;
     }
 
+    /**
+     * 
+     */
     public function url($params) : string
     {
         $uri = $this->uri;
@@ -118,8 +156,40 @@ class Route
         return (new self($uri, $callback))->method('delete');
     }
 
-    public function resolve($params, Request $request) : Response
+    /**
+     * 
+     */
+    public function resolve(array $params, Request $request) : Response
     {
+        $response = $this->resolveMiddlewares($request);
+
+        if ($response instanceof Response)
+        {
+            return $response;
+        }
+
         return $this->controller->{$this->callback}($request, ...$params);
+    }
+
+    /**
+     * 
+     */
+    private function resolveMiddlewares(Request $request) : bool | Response
+    {
+        foreach ($this->middlewares as $m)
+        {
+            $m->requestParams($request);
+            $response = $m->resolve();
+            if ($response === true)
+            {
+                continue;
+            }
+            if ($response === false)
+            {
+                return (new Response())->setStatusCode(400);
+            }
+            return $response;
+        }
+        return true;
     }
 }

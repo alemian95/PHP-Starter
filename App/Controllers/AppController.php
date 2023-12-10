@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
-use Core\App;
-use Core\Lib\Controller;
+use Core\Lib\Controller\Controller;
+use Core\Lib\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,11 +13,16 @@ class AppController extends Controller
 
     public function index(Request $r) : Response
     {
-        return new Response(App::blade()->make("index")->render());
+        return View::make('index');
     }
 
     public function test(Request $r) : Response
     {
-        return new Response(App::blade()->make("test")->render());
+        return View::make('test');
+    }
+
+    public function api(Request $r) : JsonResponse
+    {
+        return new JsonResponse($r);
     }
 }

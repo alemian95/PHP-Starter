@@ -14,6 +14,9 @@ class App
     private static array $config;
     private static array $routes;
 
+    /**
+     * 
+     */
     public static function boot()
     {
         self::$session = new \Symfony\Component\HttpFoundation\Session\Session();
@@ -29,33 +32,45 @@ class App
         self::$routes = require __DIR__ . "/../config/routes.php";
 
         $response = self::resolveRequest();
-        if ($response)
-        {
-            return $response->send();
-        }
-        return (new \Symfony\Component\HttpFoundation\Response())->setStatusCode(404)->send();
+        
+        return $response ? $response->send() : (new \Symfony\Component\HttpFoundation\Response())->setStatusCode(404)->send();
     }
 
+    /**
+     * 
+     */
     public static function session() : \Symfony\Component\HttpFoundation\Session\Session
     {
         return self::$session;
     }
 
+    /**
+     * 
+     */
     public static function request() : \Symfony\Component\HttpFoundation\Request
     {
         return self::$request;
     }
 
+    /**
+     * 
+     */
     public static function filesystem() : \Symfony\Component\Filesystem\Filesystem
     {
         return self::$filesystem;
     }
 
+    /**
+     * 
+     */
     public static function blade() : \Jenssegers\Blade\Blade
     {
         return self::$blade;
     }
 
+    /**
+     * 
+     */
     private static function resolveRequest() : \Symfony\Component\HttpFoundation\Response | null
     {
         $uri = "/" . implode("/", array_diff(
