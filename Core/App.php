@@ -2,12 +2,16 @@
 
 namespace Core;
 
+use Core\Lib\DB\DB;
+
 class App
 {
 
     private static \Symfony\Component\HttpFoundation\Session\Session $session;
     private static \Symfony\Component\HttpFoundation\Request $request;
     private static \Symfony\Component\Filesystem\Filesystem $filesystem;
+
+    private static DB $db;
 
     private static \Jenssegers\Blade\Blade $blade;
 
@@ -25,6 +29,9 @@ class App
         self::$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
         self::$filesystem = new \Symfony\Component\Filesystem\Filesystem();
+
+        self::$db = new DB();
+        self::$db->connect();
 
         self::$config['app'] = require __DIR__ . "/../config/app.php";
         self::$config['auth'] = require __DIR__ . "/../config/auth.php";
@@ -66,6 +73,14 @@ class App
     public static function blade() : \Jenssegers\Blade\Blade
     {
         return self::$blade;
+    }
+
+    /**
+     * 
+     */
+    public static function db() : DB
+    {
+        return self::$db;
     }
 
     /**
