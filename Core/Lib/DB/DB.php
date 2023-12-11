@@ -29,7 +29,7 @@ class DB
         return $this->conn;
     }
 
-    public function prepare(string $sql)
+    public function prepare(string $sql) : \Doctrine\DBAL\Statement
     {
         return $this->conn->prepare($sql);
     }
@@ -64,7 +64,7 @@ class DB
         return $this->builder()->select('*')->from($table)->where("$field like :value")->setParameter("value", "%$value%")->fetchAllAssociative();
     }
 
-    public function insert(string $table, array $data)
+    public function insert(string $table, array $data) : \Doctrine\DBAL\Result
     {
         $values = [];
         foreach ($data as $k => $v)
@@ -79,7 +79,7 @@ class DB
         return $qb->executeQuery();
     }
 
-    public function update(string $table, array $data, int | float | string $value, string $field = "id")
+    public function update(string $table, array $data, int | float | string $value, string $field = "id") : \Doctrine\DBAL\Result
     {
         $qb = $this->builder()->update($table);
         foreach ($data as $k => $v)
@@ -92,7 +92,7 @@ class DB
         return $qb->executeQuery();
     }
 
-    public function delete(string $table, int | float | string $value, string $field = 'id')
+    public function delete(string $table, int | float | string $value, string $field = 'id') : \Doctrine\DBAL\Result
     {
         return $this->builder()->delete($table)->where("$field = :$field")->setParameter($field, $value)->executeQuery();
     }
