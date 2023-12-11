@@ -3,8 +3,8 @@
 namespace Core\Lib\DB;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class DB
 {
@@ -44,22 +44,22 @@ class DB
         return $this->builder()->select('*')->from($table)->fetchAllAssociative();
     }
 
-    public function find(string $table, int | float | string $value, string $field = "id") : null | array
+    public function find(string $table, int | float | string $value, string $field = "id") : bool | array
     {
         return $this->builder()->select('*')->from($table)->where("$field = :value")->setParameter("value", $value)->fetchAssociative();
     }
 
-    public function findAll(string $table, int | float | string $value, string $field = "id") : null | array
+    public function findAll(string $table, int | float | string $value, string $field = "id") : array
     {
         return $this->builder()->select('*')->from($table)->where("$field = :value")->setParameter("value", $value)->fetchAllAssociative();
     }
 
-    public function findLike(string $table, int | float | string $value, string $field = "id") : null | array
+    public function findLike(string $table, int | float | string $value, string $field = "id") : bool | array
     {
         return $this->builder()->select('*')->from($table)->where("$field like :value")->setParameter("value", "%$value%")->fetchAssociative();
     }
 
-    public function findAllLike(string $table, int | float | string $value, string $field = "id") : null | array
+    public function findAllLike(string $table, int | float | string $value, string $field = "id") : array
     {
         return $this->builder()->select('*')->from($table)->where("$field like :value")->setParameter("value", "%$value%")->fetchAllAssociative();
     }
