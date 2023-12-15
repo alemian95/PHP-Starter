@@ -96,7 +96,7 @@ class App
         $config = self::$config;
         foreach ($segments as $s)
         {
-            $config = $config[$s];
+            $config = $config[$s] ?? null;
         }
         return $config;
     }

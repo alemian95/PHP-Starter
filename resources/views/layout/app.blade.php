@@ -45,6 +45,7 @@
             <div>
                 @include('components.navlink', [ 'href' => '/', 'text' => 'Home' ])
                 @include('components.navlink', [ 'href' => '/test', 'text' => 'Test' ])
+                @include('components.navlink', [ 'href' => '/login', 'text' => 'Login' ])
                 @include('components.navlink', [ 'href' => '/api', 'text' => 'Api↗️', 'new_tab' => true ])
             </div>
         </nav>
