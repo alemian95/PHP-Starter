@@ -1,0 +1,1 @@
+<a href="{{ $href }}" {{ ($new_tab ?? false) ? 'target="_blank"' : '' }}>{{ $text }}</a>
