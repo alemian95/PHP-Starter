@@ -1,3 +1,8 @@
 <?php
 
-return [];
+return [
+
+    'default_locale' => 'it',
+    'locales' => [ 'it', 'en' ]
+    
+];

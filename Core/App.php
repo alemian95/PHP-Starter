@@ -2,7 +2,7 @@
 
 namespace Core;
 
-use Core\Lib\DB\DB;
+use Core\Lib\Route\Route;
 
 class App
 {
@@ -11,12 +11,14 @@ class App
     private static \Symfony\Component\HttpFoundation\Request $request;
     private static \Symfony\Component\Filesystem\Filesystem $filesystem;
 
-    private static DB $db;
+    private static \Core\Lib\DB\DB $db;
 
     private static \Jenssegers\Blade\Blade $blade;
 
     private static array $config;
     private static array $routes;
+    private static array $localization;
+    private static string $locale;
 
     /**
      * 
@@ -30,13 +32,18 @@ class App
 
         self::$filesystem = new \Symfony\Component\Filesystem\Filesystem();
 
-        self::$db = new DB();
+        self::$db = new \Core\Lib\DB\DB();
         self::$db->connect();
 
         self::$config['app'] = require __DIR__ . "/../config/app.php";
         self::$config['auth'] = require __DIR__ . "/../config/auth.php";
 
+        self::loadLocalization();
+        self::$locale = self::$config['app']['default_locale'];
+
         self::$routes = require __DIR__ . "/../config/routes.php";
+
+        require_once __DIR__ . "/functions.php";
 
         $response = self::resolveRequest();
         
@@ -78,9 +85,36 @@ class App
     /**
      * 
      */
-    public static function db() : DB
+    public static function db() : \Core\Lib\DB\DB
     {
         return self::$db;
+    }
+
+    public static function config(string $key)
+    {
+        $segments = explode('.', $key);
+        $config = self::$config;
+        foreach ($segments as $s)
+        {
+            $config = $config[$s];
+        }
+        return $config;
+    }
+
+    public static function route(string $name, ...$params) : string
+    {
+        return App::$routes[$name]->url(...$params);
+    }
+
+    public static function translation($key) : string
+    {
+        $segments = explode('.', $key);
+        $value = self::$localization[self::$locale];
+        foreach ($segments as $s)
+        {
+            $value = $value[$s] ?? null;
+        }
+        return $value ?? $key;
     }
 
     /**
@@ -113,6 +147,14 @@ class App
         }
 
         return null;
+    }
+
+    private static function loadLocalization() : void
+    {
+        foreach (self::$config['app']['locales'] as $locale)
+        {
+            self::$localization[$locale] = require __DIR__ . "/../lang/$locale.php";
+        }
     }
 
 }

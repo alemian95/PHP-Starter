@@ -13,6 +13,7 @@ class AppController extends Controller
 
     public function index(Request $r) : Response
     {
+        dump(__('general.test'));
         return View::make('index');
     }
 
