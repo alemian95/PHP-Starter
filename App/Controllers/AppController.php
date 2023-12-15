@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
 use Core\Lib\Controller\Controller;
 use Core\Lib\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +13,6 @@ class AppController extends Controller
 
     public function index(Request $r) : Response
     {
-        dump(User::find(2));
         return View::make('index');
     }
 

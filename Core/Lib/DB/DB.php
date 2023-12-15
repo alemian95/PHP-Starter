@@ -84,16 +84,14 @@ class DB
         $qb = $this->builder()->update($table);
         foreach ($data as $k => $v)
         {
-            $qb->set($k, ":$k");
-            $qb->setParameter($k, $v);
+            $qb->set($k, ":$k")->setParameter($k, $v);
         }
-        $qb->where("$field = :pk_$field");
-        $qb->setParameter(":pk_$field", $value);
+        $qb->where("$field = :pk_$field")->setParameter("pk_$field", $value);
         return $qb->executeQuery();
     }
 
     public function delete(string $table, int | float | string $value, string $field = 'id') : \Doctrine\DBAL\Result
     {
-        return $this->builder()->delete($table)->where("$field = :$field")->setParameter($field, $value)->executeQuery();
+        return $this->builder()->delete($table)->where("$field = :pk_$field")->setParameter("pk_$field", $value)->executeQuery();
     }
 }

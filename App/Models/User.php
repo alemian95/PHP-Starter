@@ -8,7 +8,6 @@ class User extends Model
 {
     protected static string $table = "users";
     protected static ?string $alias = "u";
-    protected static string $pk = "id";
     protected static array $fields = [
         "first_name",
         "last_name",
@@ -16,9 +15,8 @@ class User extends Model
         "password",
     ];
 
-    protected int $id;
-    protected string $first_name;
-    protected string $last_name;
-    protected string $email;
-    protected string $password;
+    public string $first_name;
+    public string $last_name;
+    public string $email;
+    public string $password;
 }

@@ -12,6 +12,8 @@ class Model
     protected static string $pk = "id";
     protected static array $fields = [];
 
+    public int $id;
+
     public function __construct($data = [])
     {
         $this->{static::$pk} = $data[static::$pk];
@@ -61,6 +63,31 @@ class Model
             return null;
         }
         return new static($result);
+    }
+
+    public function save() : \Doctrine\DBAL\Result
+    {
+
+        $data = [];
+        foreach (static::$fields as $field)
+        {
+            $data[$field] = $this->{$field};
+        }
+
+        if ( App::db()->find(static::$table, $this->id) )
+        {
+            return App::db()->update(static::$table, $data, $this->id);
+        }
+        else
+        {
+            return App::db()->insert(static::$table, $data);
+        }
+
+    }
+
+    public function delete() : \Doctrine\DBAL\Result
+    {
+        return App::db()->delete(static::$table, $this->id);
     }
 
 }
