@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Lib\Route\Route;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class App
 {
@@ -19,6 +20,8 @@ class App
     private static array $routes;
     private static array $localization;
     private static string $locale;
+
+    private static array $cookie_queue;
 
     /**
      * 
@@ -43,9 +46,16 @@ class App
 
         self::$routes = require __DIR__ . "/../config/routes.php";
 
+        self::$cookie_queue = [];
+
         require_once __DIR__ . "/functions.php";
 
         $response = self::resolveRequest();
+
+        foreach ($cookie_queue as $cookie)
+        {
+            $response->headers->setCookie($cookie);
+        }
         
         return $response ? $response->send() : (new \Symfony\Component\HttpFoundation\Response())->setStatusCode(404)->send();
     }
@@ -115,6 +125,11 @@ class App
             $value = $value[$s] ?? null;
         }
         return $value ?? $key;
+    }
+
+    public static function enqueue(Cookie $cookie) : void
+    {
+        self::$cookie_queue[] = $cookie;
     }
 
     /**

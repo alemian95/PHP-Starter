@@ -22,17 +22,17 @@ function request() : \Symfony\Component\HttpFoundation\Request
 
 function response(?string $content = '', int $status = 200, array $headers = []) : \Symfony\Component\HttpFoundation\Response
 {
-    return (new Response($content, $status, $headers))->send();
+    return (new Response($content, $status, $headers));
 }
 
 function json_response(mixed $data = null, int $status = 200, array $headers = [], bool $json = false) : \Symfony\Component\HttpFoundation\JsonResponse
 {
-    return (new JsonResponse($data, $status, $headers, $json))->send();
+    return (new JsonResponse($data, $status, $headers, $json));
 }
 
 function redirect(string $url, int $status = 302, array $headers = [])
 {
-    return (new RedirectResponse($url, $status, $headers))->send();
+    return (new RedirectResponse($url, $status, $headers));
 }
 
 function route(string $name, ...$params) : string
