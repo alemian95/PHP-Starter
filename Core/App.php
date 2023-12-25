@@ -52,7 +52,7 @@ class App
 
         $response = self::resolveRequest();
 
-        foreach ($cookie_queue as $cookie)
+        foreach (self::$cookie_queue as $cookie)
         {
             $response->headers->setCookie($cookie);
         }
@@ -149,6 +149,13 @@ class App
             if (preg_match($route->regex(), $uri, $matches))
             {
 
+                if (self::$config['app']['api_mode'] &&$method === 'OPTION') {
+                    $response = new \Symfony\Component\HttpFoundation\JsonResponse();
+                    $response->setStatusCode(200);
+                    $response->headers->set('Allow-Origin', self::$config['app']['allow_origin']);
+                    return $response;
+                }
+
                 if ($route->method() !== $method)
                 {
                     return (new \Symfony\Component\HttpFoundation\Response())->setStatusCode(405)->send();
@@ -157,7 +164,12 @@ class App
                 self::$blade = new \Jenssegers\Blade\Blade(__DIR__ . "/../resources/views", __DIR__ . "/../storage/cache/views");
 
                 array_shift($matches);
-                return $route->resolve($matches, static::$request);
+
+                $response = $route->resolve($matches, static::$request);
+                if (self::$config['app']['api_mode']) {
+                    $response->headers->set('Allow-Origin', self::$config['app']['allow_origin']);
+                }
+                return $response;
             }
         }
 

@@ -3,6 +3,9 @@
 return [
 
     'default_locale' => 'it',
-    'locales' => [ 'it', 'en' ]
+    'locales' => [ 'it', 'en' ],
+
+    'api_mode' => true,
+    'allow_origin' => '*'
     
 ];
