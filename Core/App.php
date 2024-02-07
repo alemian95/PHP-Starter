@@ -28,22 +28,29 @@ class App
      */
     public static function boot()
     {
+        // Create session
         self::$session = new \Symfony\Component\HttpFoundation\Session\Session();
         self::$session->start();
 
+        // Create request
         self::$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
+        // Create filesystem interface
         self::$filesystem = new \Symfony\Component\Filesystem\Filesystem();
 
+        // DB connection
         self::$db = new \Core\Lib\DB\DB();
         self::$db->connect();
 
+        // Load config
         self::$config['app'] = require __DIR__ . "/../config/app.php";
         self::$config['auth'] = require __DIR__ . "/../config/auth.php";
 
+        // Load localization
         self::loadLocalization();
         self::$locale = self::$config['app']['default_locale'];
 
+        // Load routes
         self::$routes = require __DIR__ . "/../config/routes.php";
 
         self::$cookie_queue = [];
@@ -149,7 +156,7 @@ class App
             if (preg_match($route->regex(), $uri, $matches))
             {
 
-                if (self::$config['app']['api_mode'] &&$method === 'OPTION') {
+                if (self::$config['app']['api_mode'] && $method === 'OPTION') {
                     $response = new \Symfony\Component\HttpFoundation\JsonResponse();
                     $response->setStatusCode(200);
                     $response->headers->set('Allow-Origin', self::$config['app']['allow_origin']);
